@@ -1,0 +1,12 @@
+{
+    "preset": "psr12",
+    "rules": {
+        "blank_line_after_opening_tag": false,
+        "function_declaration": {
+            "closure_function_spacing": "one",
+            "closure_fn_spacing": "none"
+        },
+        "no_multiple_statements_per_line": false,
+        "method_argument_space": false
+    }
+}

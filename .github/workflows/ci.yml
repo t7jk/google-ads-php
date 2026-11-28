@@ -1,0 +1,32 @@
+# Checks on every push and pull request: PHP syntax, offline tests, static analysis and code style.
+# No secrets and no Google API access are needed (tests/run.php runs fully offline on temporary data directories).
+# Pint and PHPStan are downloaded as phars (tools/get-dev-tools.sh): the application has no Composer dependencies.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: sodium, pdo_sqlite, curl, mbstring
+          coverage: none
+      - name: PHP syntax check
+        run: find . -name '*.php' -not -path './.git/*' -not -path './tools/bin/*' -print0 | xargs -0 -n1 php -l > /dev/null
+      - name: Offline tests
+        run: php tests/run.php
+      - name: Download Pint and PHPStan
+        run: tools/get-dev-tools.sh
+      - name: Static analysis (PHPStan)
+        run: php tools/bin/phpstan.phar analyse --no-progress --memory-limit=1G
+      - name: Code style (Pint)
+        run: php tools/bin/pint.phar --test

@@ -1,0 +1,16 @@
+# Static analysis, level 3. Run: php tools/bin/phpstan.phar analyse (tools/get-dev-tools.sh downloads the phar; README, "Development").
+# Older findings live in phpstan-baseline.neon (mostly docblock array shapes written without types); do not add new ones there:
+# fix the code, or regenerate the baseline only after fixing some. Levels 4+ are not clean yet (176+ findings).
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 3
+    paths:
+        - app
+        - webroot
+        - tools
+    excludePaths:
+        analyse:
+            - tools/bin
+            - app/views   # templates get their variables from extract() in view()
